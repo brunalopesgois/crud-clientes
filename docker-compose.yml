@@ -1,0 +1,31 @@
+version: '3'
+services:
+  postgresdb:
+    image: postgres:latest
+    container_name: crud-db
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    restart: unless-stopped 
+    networks:
+      - nestjs-network
+
+  nestjs:
+    build:
+      dockerfile: ./docker/Dockerfile
+      context: .
+    image: crud-clientes
+    container_name: crud-app
+    command: npm run start:dev
+    networks:
+      - nestjs-network
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    depends_on:
+      - postgresdb
+networks:
+  nestjs-network:
+    driver: bridge
