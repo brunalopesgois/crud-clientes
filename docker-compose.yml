@@ -26,6 +26,9 @@ services:
     ports:
       - 3000:3000
     restart: unless-stopped
+    volumes:
+     - .:/var/www/code/app
+     - /var/www/code/app/node_modules
     depends_on:
       - postgresdb
 networks:
