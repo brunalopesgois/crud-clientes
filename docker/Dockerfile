@@ -1,6 +1,6 @@
 FROM node:latest
 
-WORKDIR /usr/src/app
+WORKDIR /var/www/code/app
 COPY package*.json ./
 RUN npm install
 COPY . .
