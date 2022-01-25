@@ -8,7 +8,9 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
-    restart: unless-stopped 
+    restart: unless-stopped
+    volumes:
+      - pg-data:/var/lib/postgres 
     networks:
       - nestjs-network
 
@@ -29,3 +31,5 @@ services:
 networks:
   nestjs-network:
     driver: bridge
+volumes:
+  pg-data:
