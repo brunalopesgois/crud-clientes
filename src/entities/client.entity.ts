@@ -16,4 +16,18 @@ export class Client {
 
   @Property()
   phone: string;
+
+  constructor(
+    id: number,
+    alias: string,
+    email: string,
+    password: string,
+    phone: string,
+  ) {
+    this.id = id;
+    this.alias = alias;
+    this.email = email;
+    this.password = password;
+    this.phone = phone;
+  }
 }
