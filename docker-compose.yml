@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
       POSTGRES_DB: crud_db
-    restart: unless-stopped
+    tty: true
     volumes:
       - pg-data:/var/lib/postgres 
     networks:
@@ -21,16 +21,21 @@ services:
       context: .
     image: crud-clientes
     container_name: crud-app
-    command: npm run start:dev
+    # command: npm run start:dev
     networks:
       - nestjs-network
     ports:
       - 3000:3000
-    restart: unless-stopped
+    environment:
+      DB: crud_db
+      DB_USER: root
+      DB_PW: root
+      DATABASE_URL: postgres://username:pgpassword@crud-db:5432/crud_db
+    tty: true
     volumes:
      - .:/var/www/code/app
      - ./node_modules:/var/www/code/app/node_modules
-    depends_on:
+    links:
       - postgresdb
 networks:
   nestjs-network:
