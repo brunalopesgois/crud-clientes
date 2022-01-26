@@ -8,6 +8,7 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
+      POSTGRES_DB: crud_db
     restart: unless-stopped
     volumes:
       - pg-data:/var/lib/postgres 
@@ -28,7 +29,7 @@ services:
     restart: unless-stopped
     volumes:
      - .:/var/www/code/app
-     - /var/www/code/app/node_modules
+     - ./node_modules:/var/www/code/app/node_modules
     depends_on:
       - postgresdb
 networks:
