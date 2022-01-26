@@ -59,6 +59,6 @@ export class ClientsService {
   }
 
   private async hashPassword(text: string): Promise<string> {
-    return await bcrypt.hash(text, 10);
+    return bcrypt.hash(text, 10);
   }
 }
