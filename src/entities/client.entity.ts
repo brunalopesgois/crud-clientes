@@ -1,4 +1,4 @@
-import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
+import { Entity, PrimaryKey, Property, Unique } from '@mikro-orm/core';
 
 @Entity()
 export class Client {
@@ -9,6 +9,7 @@ export class Client {
   alias: string;
 
   @Property()
+  @Unique()
   email: string;
 
   @Property()
@@ -17,14 +18,7 @@ export class Client {
   @Property()
   phone: string;
 
-  constructor(
-    id: number,
-    alias: string,
-    email: string,
-    password: string,
-    phone: string,
-  ) {
-    this.id = id;
+  constructor(alias: string, email: string, password: string, phone: string) {
     this.alias = alias;
     this.email = email;
     this.password = password;
