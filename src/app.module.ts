@@ -7,8 +7,7 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 @Module({
   imports: [
     MikroOrmModule.forRoot({
-      entities: ['./dist/entities'],
-      entitiesTs: ['./src/entities'],
+      autoLoadEntities: true,
       dbName: process.env.DB,
       user: process.env.DB_USER,
       password: process.env.DB_PW,
