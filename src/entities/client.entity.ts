@@ -21,6 +21,12 @@ export class Client {
   @Property()
   phone: string;
 
+  @Property()
+  createdAt = new Date();
+
+  @Property({ onUpdate: () => new Date() })
+  updatedAt = new Date();
+
   constructor(
     taxId: string,
     alias: string,
