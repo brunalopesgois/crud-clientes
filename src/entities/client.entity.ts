@@ -15,7 +15,7 @@ export class Client {
   @Unique()
   email: string;
 
-  @Property()
+  @Property({ hidden: true })
   password: string;
 
   @Property()
