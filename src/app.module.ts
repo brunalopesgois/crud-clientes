@@ -3,19 +3,10 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
+import config from 'mikro-orm.config';
 
 @Module({
-  imports: [
-    MikroOrmModule.forRoot({
-      autoLoadEntities: true,
-      dbName: process.env.DB,
-      user: process.env.DB_USER,
-      password: process.env.DB_PW,
-      clientUrl: process.env.DATABASE_URL,
-      type: 'postgresql',
-    }),
-    ClientModule,
-  ],
+  imports: [MikroOrmModule.forRoot(config), ClientModule],
   controllers: [AppController],
   providers: [AppService],
 })
