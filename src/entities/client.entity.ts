@@ -1,11 +1,4 @@
-import { Wallet } from './wallet.entity';
-import {
-  Entity,
-  ManyToOne,
-  PrimaryKey,
-  Property,
-  Unique,
-} from '@mikro-orm/core';
+import { Entity, PrimaryKey, Property, Unique } from '@mikro-orm/core';
 
 @Entity()
 export class Client {
@@ -28,14 +21,16 @@ export class Client {
   @Property()
   phone: string;
 
-  @ManyToOne({ entity: () => Wallet, hidden: true })
-  wallet: Wallet;
+  @Property({ type: 'Date', onCreate: () => new Date(), nullable: true })
+  createdAt: Date;
 
-  @Property()
-  createdAt = new Date();
-
-  @Property({ onUpdate: () => new Date() })
-  updatedAt = new Date();
+  @Property({
+    type: 'Date',
+    onCreate: () => new Date(),
+    onUpdate: () => new Date(),
+    nullable: true,
+  })
+  updatedAt: Date;
 
   constructor(
     taxId: string,
