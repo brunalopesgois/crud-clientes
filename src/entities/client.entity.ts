@@ -6,6 +6,9 @@ export class Client {
   id: number;
 
   @Property()
+  taxId: string;
+
+  @Property()
   alias: string;
 
   @Property()
@@ -18,7 +21,14 @@ export class Client {
   @Property()
   phone: string;
 
-  constructor(alias: string, email: string, password: string, phone: string) {
+  constructor(
+    taxId: string,
+    alias: string,
+    email: string,
+    password: string,
+    phone: string,
+  ) {
+    this.taxId = taxId;
     this.alias = alias;
     this.email = email;
     this.password = password;

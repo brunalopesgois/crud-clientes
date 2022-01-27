@@ -22,7 +22,7 @@ export class ClientsController {
 
   @Get(':id')
   async show(@Param() params): Promise<Client> {
-    return this.clientService.findOne(params.id);
+    return this.clientService.findById(params.id);
   }
 
   @Post()

@@ -15,7 +15,7 @@ export class ClientsService {
     return this.clientRepository.findAll();
   }
 
-  async findOne(id: number): Promise<Client> {
+  async findById(id: number): Promise<Client> {
     return this.clientRepository.findOne(id);
   }
 
@@ -28,6 +28,7 @@ export class ClientsService {
 
     if (!alreadyExists) {
       const newClient = new Client(
+        client.taxId,
         client.alias,
         client.email,
         password,
@@ -38,7 +39,7 @@ export class ClientsService {
   }
 
   async update(id: number, client: Client): Promise<Client> {
-    const existentClient = await this.findOne(id);
+    const existentClient = await this.findById(id);
 
     const password = await this.hashPassword(client.password);
 
@@ -54,7 +55,7 @@ export class ClientsService {
   }
 
   async delete(id: number) {
-    const client = await this.findOne(id);
+    const client = await this.findById(id);
     this.clientRepository.removeAndFlush(client);
   }
 
