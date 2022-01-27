@@ -1,26 +1,22 @@
 import { Status } from './../enums/status.enum';
-import { Entity, Enum, OneToMany, PrimaryKey, Property } from '@mikro-orm/core';
-import { Client } from './client.entity';
+import { Entity, Enum, PrimaryKey, Property } from '@mikro-orm/core';
 
 @Entity()
 export class Wallet {
   @PrimaryKey()
   id: number;
 
-  @OneToMany({
-    entity: () => Client,
-    mappedBy: 'wallet',
-  })
-  client?: Client;
-
   @Property()
   clientId: number;
 
-  @Property()
-  alias: string;
+  @Property({ nullable: true })
+  alias?: string;
 
   @Enum(() => Status)
-  status: Status = Status.created;
+  status: Status;
+
+  @Property({ default: 0 })
+  balance?: number;
 
   @Property({ nullable: true })
   ispb?: string;
@@ -39,17 +35,29 @@ export class Wallet {
 
   constructor(
     clientId: number,
-    alias: string,
     status: Status,
-    ispb: string,
-    bankBranch: string,
-    bankNumber: string,
+    alias: string = null,
+    ispb: string = null,
+    bankBranch: string = null,
+    bankNumber: string = null,
   ) {
     this.clientId = clientId;
-    this.alias = alias;
     this.status = status;
+    this.alias = alias;
     this.ispb = ispb;
     this.bankBranch = bankBranch;
     this.bankNumber = bankNumber;
+  }
+
+  public deposit(value: number) {
+    if (value > 0) {
+      this.balance += value;
+    }
+  }
+
+  public withdraw(value: number) {
+    if (this.balance >= 0 && this.balance >= value) {
+      this.balance -= value;
+    }
   }
 }
