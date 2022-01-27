@@ -1,5 +1,13 @@
 import { WalletsService } from './../services/wallets.service';
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { Wallet } from 'src/entities/wallet.entity';
 
 @Controller('wallets')
@@ -26,6 +34,7 @@ export class WalletsController {
     return this.walletService.update(params.id, wallet);
   }
 
+  @Delete(':id')
   async destroy(@Param() params) {
     this.walletService.delete(params.id);
   }
