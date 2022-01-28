@@ -3,9 +3,18 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { AuthController } from './../controllers/auth.controller';
 import { AuthService } from './../services/auth.service';
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [MikroOrmModule.forFeature([Client])],
+  imports: [
+    MikroOrmModule.forFeature([Client]),
+    JwtModule.register({
+      secret: 'super-secret',
+      signOptions: {
+        expiresIn: 18000,
+      },
+    }),
+  ],
   providers: [AuthService],
   controllers: [AuthController],
 })
