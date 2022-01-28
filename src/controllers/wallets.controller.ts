@@ -25,7 +25,7 @@ export class WalletsController {
   }
 
   @Post()
-  async store(@Body() wallet: Wallet) {
+  async store(@Body() wallet) {
     this.walletService.create(wallet);
   }
 

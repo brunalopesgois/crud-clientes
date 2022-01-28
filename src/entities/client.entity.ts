@@ -1,4 +1,10 @@
-import { Entity, PrimaryKey, Property, Unique } from '@mikro-orm/core';
+import {
+  DateType,
+  Entity,
+  PrimaryKey,
+  Property,
+  Unique,
+} from '@mikro-orm/core';
 
 @Entity()
 export class Client {
@@ -21,16 +27,19 @@ export class Client {
   @Property()
   phone: string;
 
-  @Property({ type: 'Date', onCreate: () => new Date(), nullable: true })
-  createdAt: Date;
-
   @Property({
-    type: 'Date',
     onCreate: () => new Date(),
-    onUpdate: () => new Date(),
+    type: DateType,
     nullable: true,
   })
-  updatedAt: Date;
+  createdAt = new Date();
+
+  @Property({
+    onUpdate: () => new Date(),
+    type: DateType,
+    nullable: true,
+  })
+  updatedAt = new Date();
 
   constructor(
     taxId: string,

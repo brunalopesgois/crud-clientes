@@ -26,12 +26,12 @@ export class ClientsController {
   }
 
   @Post()
-  async store(@Body() client: Client) {
+  async store(@Body() client) {
     this.clientService.create(client);
   }
 
   @Put(':id')
-  async update(@Param() params, @Body() client: Client): Promise<Client> {
+  async update(@Param() params, @Body() client): Promise<Client> {
     return this.clientService.update(params.id, client);
   }
 

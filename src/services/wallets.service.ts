@@ -22,39 +22,49 @@ export class WalletsService {
     return this.walletRepository.findOne(id);
   }
 
-  async create(wallet: Wallet) {
-    const alreadyExists = await this.walletRepository.findOne({
+  async create(wallet) {
+    const sameAccountWallet = await this.walletRepository.findOne({
       ispb: wallet.ispb,
-      bankBranch: wallet.bankBranch,
-      bankNumber: wallet.bankNumber,
+      bankBranch: wallet.bank_branch,
+      bankNumber: wallet.bank_number,
     });
 
-    const clientExists = await this.clientRepository.findOne(wallet.clientId);
+    if (sameAccountWallet) {
+      throw new Error('cannot create wallets with the same account');
+    }
 
-    if (!alreadyExists && clientExists) {
-      const newWallet = new Wallet(
-        wallet.clientId,
-        Status.created,
-        wallet.alias,
-        wallet.ispb,
-        wallet.bankBranch,
-        wallet.bankNumber,
-      );
+    const clientExists = await this.clientRepository.findOne({
+      id: wallet.client_id,
+    });
 
-      this.walletRepository.persistAndFlush(newWallet);
+    if (!clientExists) {
+      throw new Error('client does not exist');
+    }
+    const newWallet = new Wallet(
+      wallet.client_id,
+      Status.created,
+      wallet.alias,
+      wallet.ispb,
+      wallet.bank_branch,
+      wallet.bank_number,
+    );
+    try {
+      await this.walletRepository.persistAndFlush(newWallet);
+    } catch (error) {
+      console.log(error);
     }
   }
 
-  async update(id: number, wallet: Wallet): Promise<Wallet> {
+  async update(id: number, wallet): Promise<Wallet> {
     const existentWallet = await this.findById(id);
 
     const newWallet = this.walletRepository.assign(existentWallet, {
-      clientId: wallet.clientId,
+      clientId: wallet.client_id,
       status: wallet.status,
       alias: wallet.alias,
       ispb: wallet.ispb,
-      bankBranch: wallet.bankBranch,
-      bankNumber: wallet.bankNumber,
+      bankBranch: wallet.bank_branch,
+      bankNumber: wallet.bank_number,
     });
     this.walletRepository.persistAndFlush(newWallet);
 

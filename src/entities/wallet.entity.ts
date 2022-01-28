@@ -1,12 +1,12 @@
 import { Status } from './../enums/status.enum';
-import { Entity, Enum, PrimaryKey, Property } from '@mikro-orm/core';
+import { DateType, Entity, Enum, PrimaryKey, Property } from '@mikro-orm/core';
 
 @Entity()
 export class Wallet {
   @PrimaryKey()
   id: number;
 
-  @Property()
+  @Property({ name: 'client_id' })
   clientId: number;
 
   @Property({ nullable: true })
@@ -18,28 +18,36 @@ export class Wallet {
   @Property({ default: 0 })
   balance?: number;
 
-  @Property({ nullable: true })
+  @Property()
   ispb?: string;
 
-  @Property({ name: 'bank_branch', nullable: true })
+  @Property({ name: 'bank_branch' })
   bankBranch?: string;
 
-  @Property({ name: 'bank_number', nullable: true })
+  @Property({ name: 'bank_number' })
   bankNumber?: string;
 
-  @Property()
+  @Property({
+    onCreate: () => new Date(),
+    type: DateType,
+    nullable: true,
+  })
   createdAt = new Date();
 
-  @Property({ onUpdate: () => new Date() })
+  @Property({
+    onUpdate: () => new Date(),
+    type: DateType,
+    nullable: true,
+  })
   updatedAt = new Date();
 
   constructor(
     clientId: number,
     status: Status,
     alias: string = null,
-    ispb: string = null,
-    bankBranch: string = null,
-    bankNumber: string = null,
+    ispb: string,
+    bankBranch: string,
+    bankNumber: string,
   ) {
     this.clientId = clientId;
     this.status = status;

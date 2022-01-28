@@ -19,7 +19,7 @@ export class ClientsService {
     return this.clientRepository.findOne(id);
   }
 
-  async create(client: Client) {
+  async create(client) {
     const alreadyExists = await this.clientRepository.findOne({
       email: client.email,
     });
@@ -28,7 +28,7 @@ export class ClientsService {
 
     if (!alreadyExists) {
       const newClient = new Client(
-        client.taxId,
+        client.tax_id,
         client.alias,
         client.email,
         password,
@@ -38,12 +38,13 @@ export class ClientsService {
     }
   }
 
-  async update(id: number, client: Client): Promise<Client> {
+  async update(id: number, client): Promise<Client> {
     const existentClient = await this.findById(id);
 
     const password = await this.hashPassword(client.password);
 
     const newClient = this.clientRepository.assign(existentClient, {
+      taxId: client.tax_id,
       alias: client.alias,
       email: client.email,
       password: password,
