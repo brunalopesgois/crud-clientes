@@ -8,14 +8,17 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { Client } from 'src/entities/client.entity';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @Controller('clients')
 export class ClientsController {
   constructor(private clientService: ClientsService) {}
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   async index(): Promise<Client[]> {
     return this.clientService.findAll();
   }
