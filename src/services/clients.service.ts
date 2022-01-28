@@ -2,7 +2,7 @@ import { Client } from 'src/entities/client.entity';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { Injectable } from '@nestjs/common';
 import { EntityRepository } from '@mikro-orm/mysql';
-import * as bcrypt from 'bcrypt';
+import hasher from 'src/utils/passwordHasher';
 
 @Injectable()
 export class ClientsService {
@@ -24,7 +24,7 @@ export class ClientsService {
       email: client.email,
     });
 
-    const password = await this.hashPassword(client.password);
+    const password = await hasher.hashPassword(client.password);
 
     if (!alreadyExists) {
       const newClient = new Client(
@@ -41,7 +41,7 @@ export class ClientsService {
   async update(id: number, client): Promise<Client> {
     const existentClient = await this.findById(id);
 
-    const password = await this.hashPassword(client.password);
+    const password = await hasher.hashPassword(client.password);
 
     const newClient = this.clientRepository.assign(existentClient, {
       taxId: client.tax_id,
@@ -58,9 +58,5 @@ export class ClientsService {
   async delete(id: number) {
     const client = await this.findById(id);
     this.clientRepository.removeAndFlush(client);
-  }
-
-  private async hashPassword(text: string): Promise<string> {
-    return bcrypt.hash(text, 10);
   }
 }
