@@ -58,14 +58,16 @@ export class Wallet {
   }
 
   public deposit(value: number) {
-    if (value > 0) {
-      this.balance += value;
+    if (value <= 0) {
+      throw new Error('invalid transaction');
     }
+    this.balance += value;
   }
 
   public withdraw(value: number) {
-    if (this.balance >= 0 && this.balance >= value) {
-      this.balance -= value;
+    if (this.balance <= 0 || this.balance < value) {
+      throw new Error('invalid transaction');
     }
+    this.balance -= value;
   }
 }

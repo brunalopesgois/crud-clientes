@@ -98,4 +98,24 @@ export class WalletsService {
       throw new Error(error.message);
     }
   }
+
+  async deposit(walletId: number, amount: number): Promise<Wallet> {
+    const wallet = await this.walletRepository.findOne(walletId);
+
+    if (!wallet) {
+      throw new Error(`The wallet with id ${walletId} does not exist`);
+    }
+
+    this.em.begin();
+    try {
+      wallet.deposit(amount);
+      await this.walletRepository.persistAndFlush(wallet);
+      this.em.commit();
+    } catch (error) {
+      this.em.rollback();
+      throw new Error(error.message);
+    }
+
+    return wallet;
+  }
 }

@@ -55,4 +55,16 @@ export class WalletsController {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  @Post(':id/deposit')
+  async deposit(
+    @Param('id') id: number,
+    @Body('amount') amount: number,
+  ): Promise<Wallet> {
+    try {
+      return this.walletService.deposit(id, amount);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }
