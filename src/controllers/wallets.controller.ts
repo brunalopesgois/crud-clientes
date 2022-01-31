@@ -4,6 +4,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -29,16 +31,28 @@ export class WalletsController {
 
   @Post()
   async store(@Body() wallet) {
-    this.walletService.create(wallet);
+    try {
+      await this.walletService.create(wallet);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Put(':id')
   async update(@Param() params, @Body() wallet): Promise<Wallet> {
-    return this.walletService.update(params.id, wallet);
+    try {
+      return this.walletService.update(params.id, wallet);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Delete(':id')
   async destroy(@Param() params) {
-    this.walletService.delete(params.id);
+    try {
+      await this.walletService.delete(params.id);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

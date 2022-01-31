@@ -4,6 +4,7 @@ import { Wallet } from './../entities/wallet.entity';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { Injectable } from '@nestjs/common';
 import { EntityRepository } from '@mikro-orm/mysql';
+import { EntityManager } from '@mikro-orm/core';
 
 @Injectable()
 export class WalletsService {
@@ -12,6 +13,7 @@ export class WalletsService {
     private readonly walletRepository: EntityRepository<Wallet>,
     @InjectRepository(Client)
     private readonly clientRepository: EntityRepository<Client>,
+    private readonly em: EntityManager,
   ) {}
 
   async findAll(): Promise<Wallet[]> {
@@ -48,15 +50,22 @@ export class WalletsService {
       wallet.bank_branch,
       wallet.bank_number,
     );
+    this.em.begin();
     try {
       await this.walletRepository.persistAndFlush(newWallet);
+      this.em.commit();
     } catch (error) {
-      console.log(error);
+      this.em.rollback();
+      throw new Error(error.message);
     }
   }
 
   async update(id: number, wallet): Promise<Wallet> {
     const existentWallet = await this.findById(id);
+
+    if (!existentWallet) {
+      throw new Error('wallet does not exist');
+    }
 
     const newWallet = this.walletRepository.assign(existentWallet, {
       clientId: wallet.client_id,
@@ -66,13 +75,27 @@ export class WalletsService {
       bankBranch: wallet.bank_branch,
       bankNumber: wallet.bank_number,
     });
-    this.walletRepository.persistAndFlush(newWallet);
+    this.em.begin();
+    try {
+      await this.walletRepository.persistAndFlush(newWallet);
+      this.em.commit();
+    } catch (error) {
+      this.em.rollback();
+      throw new Error(error.message);
+    }
 
     return newWallet;
   }
 
   async delete(id: number) {
     const wallet = await this.findById(id);
-    this.walletRepository.removeAndFlush(wallet);
+    this.em.begin();
+    try {
+      await this.walletRepository.removeAndFlush(wallet);
+      this.em.commit();
+    } catch (error) {
+      this.em.rollback();
+      throw new Error(error.message);
+    }
   }
 }
