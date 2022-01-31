@@ -2,7 +2,7 @@ import { Client } from 'src/entities/client.entity';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { EntityRepository } from '@mikro-orm/mysql';
-import hasher from 'src/utils/passwordHasher';
+import hasher from 'src/utils/password-hasher';
 import { EntityManager } from '@mikro-orm/core';
 
 @Injectable()

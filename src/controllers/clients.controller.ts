@@ -24,8 +24,8 @@ export class ClientsController {
   }
 
   @Get(':id')
-  async show(@Param() params): Promise<Client> {
-    return this.clientService.findById(params.id);
+  async show(@Param('id') id: number): Promise<Client> {
+    return this.clientService.findById(id);
   }
 
   @Post()
@@ -34,13 +34,13 @@ export class ClientsController {
   }
 
   @Put(':id')
-  async update(@Param() params, @Body() client): Promise<Client> {
-    return this.clientService.update(params.id, client);
+  async update(@Param('id') id: number, @Body() client): Promise<Client> {
+    return this.clientService.update(id, client);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  async destroy(@Param() params) {
-    this.clientService.delete(params.id);
+  async destroy(@Param('id') id: number) {
+    this.clientService.delete(id);
   }
 }

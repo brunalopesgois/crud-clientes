@@ -23,8 +23,8 @@ export class WalletsController {
   }
 
   @Get(':id')
-  async show(@Param() params): Promise<Wallet> {
-    return this.walletService.findById(params.id);
+  async show(@Param('id') id: number): Promise<Wallet> {
+    return this.walletService.findById(id);
   }
 
   @Post()
@@ -33,8 +33,8 @@ export class WalletsController {
   }
 
   @Put(':id')
-  async update(@Param() params, @Body() wallet): Promise<Wallet> {
-    return this.walletService.update(params.id, wallet);
+  async update(@Param('id') id: number, @Body() wallet): Promise<Wallet> {
+    return this.walletService.update(id, wallet);
   }
 
   @Delete(':id')
