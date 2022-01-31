@@ -7,10 +7,13 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { Wallet } from 'src/entities/wallet.entity';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @Controller('wallets')
+@UseGuards(JwtAuthGuard)
 export class WalletsController {
   constructor(private readonly walletService: WalletsService) {}
 
