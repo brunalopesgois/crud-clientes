@@ -1,3 +1,4 @@
+import { InvalidTransactionException } from './../exceptions/invalid-transaction.exception';
 import { Status } from './../enums/status.enum';
 import { DateType, Entity, Enum, PrimaryKey, Property } from '@mikro-orm/core';
 
@@ -59,14 +60,14 @@ export class Wallet {
 
   public deposit(value: number) {
     if (value <= 0) {
-      throw new Error('invalid transaction');
+      throw new InvalidTransactionException('Invalid amount');
     }
     this.balance += value;
   }
 
   public withdraw(value: number) {
     if (this.balance <= 0 || this.balance < value) {
-      throw new Error('invalid transaction');
+      throw new InvalidTransactionException('Insufficient funds');
     }
     this.balance -= value;
   }

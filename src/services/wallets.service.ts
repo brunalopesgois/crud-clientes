@@ -1,8 +1,9 @@
+import { InvalidTransactionException } from './../exceptions/invalid-transaction.exception';
 import { Client } from 'src/entities/client.entity';
 import { Status } from './../enums/status.enum';
 import { Wallet } from './../entities/wallet.entity';
 import { InjectRepository } from '@mikro-orm/nestjs';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { EntityRepository } from '@mikro-orm/mysql';
 import { EntityManager } from '@mikro-orm/core';
 
@@ -32,7 +33,10 @@ export class WalletsService {
     });
 
     if (sameAccountWallet) {
-      throw new Error('cannot create wallets with the same account');
+      throw new HttpException(
+        'Can not create wallets with the same account',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const clientExists = await this.clientRepository.findOne({
@@ -40,7 +44,10 @@ export class WalletsService {
     });
 
     if (!clientExists) {
-      throw new Error('client does not exist');
+      throw new HttpException(
+        `The client with id ${wallet.client_id} does not exist`,
+        HttpStatus.NOT_FOUND,
+      );
     }
     const newWallet = new Wallet(
       wallet.client_id,
@@ -56,7 +63,7 @@ export class WalletsService {
       this.em.commit();
     } catch (error) {
       this.em.rollback();
-      throw new Error(error.message);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -64,7 +71,10 @@ export class WalletsService {
     const existentWallet = await this.findById(id);
 
     if (!existentWallet) {
-      throw new Error('wallet does not exist');
+      throw new HttpException(
+        `The wallet with id ${id} does not exist`,
+        HttpStatus.NOT_FOUND,
+      );
     }
 
     const newWallet = this.walletRepository.assign(existentWallet, {
@@ -81,7 +91,7 @@ export class WalletsService {
       this.em.commit();
     } catch (error) {
       this.em.rollback();
-      throw new Error(error.message);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return newWallet;
@@ -95,7 +105,7 @@ export class WalletsService {
       this.em.commit();
     } catch (error) {
       this.em.rollback();
-      throw new Error(error.message);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -103,7 +113,10 @@ export class WalletsService {
     const wallet = await this.walletRepository.findOne(walletId);
 
     if (!wallet) {
-      throw new Error(`The wallet with id ${walletId} does not exist`);
+      throw new HttpException(
+        `The wallet with id ${walletId} does not exist`,
+        HttpStatus.NOT_FOUND,
+      );
     }
 
     this.em.begin();
@@ -113,7 +126,11 @@ export class WalletsService {
       this.em.commit();
     } catch (error) {
       this.em.rollback();
-      throw new Error(error.message);
+      if (error instanceof InvalidTransactionException) {
+        throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      }
+
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     return wallet;
