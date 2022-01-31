@@ -135,4 +135,31 @@ export class WalletsService {
 
     return wallet;
   }
+
+  async withdraw(walletId: number, amount: number): Promise<Wallet> {
+    const wallet = await this.walletRepository.findOne(walletId);
+
+    if (!wallet) {
+      throw new HttpException(
+        `The wallet with id ${walletId} does not exist`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    this.em.begin();
+    try {
+      wallet.withdraw(amount);
+      await this.walletRepository.persistAndFlush(wallet);
+      this.em.commit();
+    } catch (error) {
+      this.em.rollback();
+      if (error instanceof InvalidTransactionException) {
+        throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      }
+
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    return wallet;
+  }
 }

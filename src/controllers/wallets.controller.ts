@@ -49,4 +49,12 @@ export class WalletsController {
   ): Promise<Wallet> {
     return this.walletService.deposit(id, amount);
   }
+
+  @Post(':id/withdraw')
+  async withdraw(
+    @Param('id') id: number,
+    @Body('amount') amount: number,
+  ): Promise<Wallet> {
+    return this.walletService.withdraw(id, amount);
+  }
 }
