@@ -1,3 +1,4 @@
+import { UpdateWalletDto } from './../dtos/wallet/update-wallet.dto';
 import { CreateWalletDto } from './../dtos/wallet/create-wallet.dto';
 import { WalletsService } from './../services/wallets.service';
 import {
@@ -34,8 +35,11 @@ export class WalletsController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: number, @Body() wallet): Promise<Wallet> {
-    return this.walletService.update(id, wallet);
+  async update(
+    @Param('id') id: number,
+    @Body() updateWalletDto: UpdateWalletDto,
+  ): Promise<Wallet> {
+    return this.walletService.update(id, updateWalletDto);
   }
 
   @Delete(':id')

@@ -1,3 +1,4 @@
+import { UpdateWalletDto } from './../dtos/wallet/update-wallet.dto';
 import { CreateWalletDto } from './../dtos/wallet/create-wallet.dto';
 import { InvalidTransactionException } from './../exceptions/invalid-transaction.exception';
 import { Client } from 'src/entities/client.entity';
@@ -66,7 +67,7 @@ export class WalletsService {
     }
   }
 
-  async update(id: number, wallet): Promise<Wallet> {
+  async update(id: number, updateWalletDto: UpdateWalletDto): Promise<Wallet> {
     const existentWallet = await this.findById(id);
 
     if (!existentWallet) {
@@ -77,12 +78,12 @@ export class WalletsService {
     }
 
     const newWallet = this.walletRepository.assign(existentWallet, {
-      clientId: wallet.client_id,
-      status: wallet.status,
-      alias: wallet.alias,
-      ispb: wallet.ispb,
-      bankBranch: wallet.bank_branch,
-      bankNumber: wallet.bank_number,
+      clientId: updateWalletDto.client_id,
+      alias: updateWalletDto.alias,
+      ispb: updateWalletDto.ispb,
+      bankBranch: updateWalletDto.bank_branch,
+      bankNumber: updateWalletDto.bank_number,
+      status: updateWalletDto.status,
     });
     this.em.begin();
     try {
