@@ -1,3 +1,4 @@
+import { UpdateClientDto } from './../dtos/update-client.dto';
 import { CreateClientDto } from './../dtos/create-client.dto';
 import { Client } from 'src/entities/client.entity';
 import { InjectRepository } from '@mikro-orm/nestjs';
@@ -29,7 +30,7 @@ export class ClientsService {
 
     if (alreadyExists) {
       throw new HttpException(
-        `The client with email ${createClientDto.email} alread exists`,
+        `The client with email ${createClientDto.email} already exists`,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -53,7 +54,7 @@ export class ClientsService {
     }
   }
 
-  async update(id: number, client): Promise<Client> {
+  async update(id: number, updateClientDto: UpdateClientDto): Promise<Client> {
     const existentClient = await this.findById(id);
 
     if (!existentClient) {
@@ -63,14 +64,14 @@ export class ClientsService {
       );
     }
 
-    const password = await hasher.hashPassword(client.password);
+    const password = await hasher.hashPassword(updateClientDto.password);
 
     const newClient = this.clientRepository.assign(existentClient, {
-      taxId: client.tax_id,
-      alias: client.alias,
-      email: client.email,
+      taxId: updateClientDto.tax_id,
+      alias: updateClientDto.alias,
+      email: updateClientDto.email,
       password: password,
-      phone: client.phone,
+      phone: updateClientDto.phone,
     });
     this.em.begin();
     try {

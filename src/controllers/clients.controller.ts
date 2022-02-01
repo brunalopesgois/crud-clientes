@@ -1,3 +1,4 @@
+import { UpdateClientDto } from './../dtos/update-client.dto';
 import { CreateClientDto } from './../dtos/create-client.dto';
 import { ClientsService } from './../services/clients.service';
 import {
@@ -35,8 +36,11 @@ export class ClientsController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: number, @Body() client): Promise<Client> {
-    return this.clientService.update(id, client);
+  async update(
+    @Param('id') id: number,
+    @Body() updateClientDto: UpdateClientDto,
+  ): Promise<Client> {
+    return this.clientService.update(id, updateClientDto);
   }
 
   @Delete(':id')
