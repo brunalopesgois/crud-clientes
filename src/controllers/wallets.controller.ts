@@ -1,3 +1,4 @@
+import { CreateWalletDto } from './../dtos/wallet/create-wallet.dto';
 import { WalletsService } from './../services/wallets.service';
 import {
   Body,
@@ -28,8 +29,8 @@ export class WalletsController {
   }
 
   @Post()
-  async store(@Body() wallet) {
-    this.walletService.create(wallet);
+  async store(@Body() createWalletDto: CreateWalletDto) {
+    this.walletService.create(createWalletDto);
   }
 
   @Put(':id')

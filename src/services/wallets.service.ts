@@ -1,6 +1,6 @@
+import { CreateWalletDto } from './../dtos/wallet/create-wallet.dto';
 import { InvalidTransactionException } from './../exceptions/invalid-transaction.exception';
 import { Client } from 'src/entities/client.entity';
-import { Status } from './../enums/status.enum';
 import { Wallet } from './../entities/wallet.entity';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -25,11 +25,11 @@ export class WalletsService {
     return this.walletRepository.findOne(id);
   }
 
-  async create(wallet) {
+  async create(createWalletDto: CreateWalletDto) {
     const sameAccountWallet = await this.walletRepository.findOne({
-      ispb: wallet.ispb,
-      bankBranch: wallet.bank_branch,
-      bankNumber: wallet.bank_number,
+      ispb: createWalletDto.ispb,
+      bankBranch: createWalletDto.bank_branch,
+      bankNumber: createWalletDto.bank_number,
     });
 
     if (sameAccountWallet) {
@@ -40,26 +40,25 @@ export class WalletsService {
     }
 
     const clientExists = await this.clientRepository.findOne({
-      id: wallet.client_id,
+      id: createWalletDto.client_id,
     });
 
     if (!clientExists) {
       throw new HttpException(
-        `The client with id ${wallet.client_id} does not exist`,
+        `The client with id ${createWalletDto.client_id} does not exist`,
         HttpStatus.NOT_FOUND,
       );
     }
-    const newWallet = new Wallet(
-      wallet.client_id,
-      Status.created,
-      wallet.alias,
-      wallet.ispb,
-      wallet.bank_branch,
-      wallet.bank_number,
+    const wallet = new Wallet(
+      createWalletDto.client_id,
+      createWalletDto.alias,
+      createWalletDto.ispb,
+      createWalletDto.bank_branch,
+      createWalletDto.bank_number,
     );
     this.em.begin();
     try {
-      await this.walletRepository.persistAndFlush(newWallet);
+      await this.walletRepository.persistAndFlush(wallet);
       this.em.commit();
     } catch (error) {
       this.em.rollback();

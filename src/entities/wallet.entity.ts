@@ -44,18 +44,18 @@ export class Wallet {
 
   constructor(
     clientId: number,
-    status: Status,
     alias: string = null,
     ispb: string,
     bankBranch: string,
     bankNumber: string,
+    status: Status = Status.created,
   ) {
     this.clientId = clientId;
-    this.status = status;
     this.alias = alias;
     this.ispb = ispb;
     this.bankBranch = bankBranch;
     this.bankNumber = bankNumber;
+    this.status = status;
   }
 
   public deposit(value: number) {

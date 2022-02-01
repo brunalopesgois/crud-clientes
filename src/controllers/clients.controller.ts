@@ -1,5 +1,5 @@
-import { UpdateClientDto } from './../dtos/update-client.dto';
-import { CreateClientDto } from './../dtos/create-client.dto';
+import { UpdateClientDto } from '../dtos/client/update-client.dto';
+import { CreateClientDto } from '../dtos/client/create-client.dto';
 import { ClientsService } from './../services/clients.service';
 import {
   Body,
