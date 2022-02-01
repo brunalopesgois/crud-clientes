@@ -1,3 +1,4 @@
+import { CreateClientDto } from './../dtos/create-client.dto';
 import { Client } from 'src/entities/client.entity';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
@@ -21,30 +22,30 @@ export class ClientsService {
     return this.clientRepository.findOne(id);
   }
 
-  async create(client) {
+  async create(createClientDto: CreateClientDto) {
     const alreadyExists = await this.clientRepository.findOne({
-      email: client.email,
+      email: createClientDto.email,
     });
 
     if (alreadyExists) {
       throw new HttpException(
-        `The client with email ${client.email} alread exists`,
+        `The client with email ${createClientDto.email} alread exists`,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const password = await hasher.hashPassword(client.password);
+    const password = await hasher.hashPassword(createClientDto.password);
 
-    const newClient = new Client(
-      client.tax_id,
-      client.alias,
-      client.email,
+    const client = new Client(
+      createClientDto.tax_id,
+      createClientDto.alias,
+      createClientDto.email,
       password,
-      client.phone,
+      createClientDto.phone,
     );
     this.em.begin();
     try {
-      await this.clientRepository.persistAndFlush(newClient);
+      await this.clientRepository.persistAndFlush(client);
       this.em.commit();
     } catch (error) {
       this.em.rollback();

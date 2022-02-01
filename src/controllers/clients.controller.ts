@@ -1,3 +1,4 @@
+import { CreateClientDto } from './../dtos/create-client.dto';
 import { ClientsService } from './../services/clients.service';
 import {
   Body,
@@ -29,8 +30,8 @@ export class ClientsController {
   }
 
   @Post()
-  async store(@Body() client) {
-    this.clientService.create(client);
+  async store(@Body() createClientDto: CreateClientDto) {
+    this.clientService.create(createClientDto);
   }
 
   @Put(':id')
