@@ -47,11 +47,17 @@ export class Client {
     email: string,
     password: string,
     phone: string,
+    id?: number,
+    createdAt?: Date,
+    updatedAt?: Date,
   ) {
     this.taxId = taxId;
     this.alias = alias;
     this.email = email;
     this.password = password;
     this.phone = phone;
+    this.id = id;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
 }

@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt';
 
-const hasher = {
+export const hasher = {
   async hashPassword(text: string): Promise<string> {
     return bcrypt.hash(text, 10);
   },
@@ -9,4 +9,3 @@ const hasher = {
     return bcrypt.compare(password, hash);
   },
 };
-export default hasher;
