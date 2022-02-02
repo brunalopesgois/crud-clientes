@@ -31,7 +31,7 @@ export class WalletsController {
 
   @Post()
   async store(@Body() createWalletDto: CreateWalletDto) {
-    this.walletService.create(createWalletDto);
+    await this.walletService.create(createWalletDto);
   }
 
   @Put(':id')

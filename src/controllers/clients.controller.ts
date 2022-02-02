@@ -32,7 +32,7 @@ export class ClientsController {
 
   @Post()
   async store(@Body() createClientDto: CreateClientDto) {
-    this.clientService.create(createClientDto);
+    await this.clientService.create(createClientDto);
   }
 
   @Put(':id')
@@ -46,6 +46,6 @@ export class ClientsController {
   @Delete(':id')
   @HttpCode(204)
   async destroy(@Param('id') id: number) {
-    this.clientService.delete(id);
+    await this.clientService.delete(id);
   }
 }
