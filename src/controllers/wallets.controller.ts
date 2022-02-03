@@ -8,6 +8,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -56,6 +58,7 @@ export class WalletsController {
   }
 
   @Post(':id/withdraw')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async withdraw(
     @Param('id') id: number,
     @Body('amount') amount: number,

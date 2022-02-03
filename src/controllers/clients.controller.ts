@@ -9,6 +9,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -44,7 +45,7 @@ export class ClientsController {
   }
 
   @Delete(':id')
-  @HttpCode(204)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async destroy(@Param('id') id: number) {
     await this.clientService.delete(id);
   }
