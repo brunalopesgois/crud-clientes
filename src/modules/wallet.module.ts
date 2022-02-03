@@ -1,5 +1,5 @@
+import { Client } from './../entities/client.entity';
 import { WalletsController } from './../controllers/wallets.controller';
-import { Client } from 'src/entities/client.entity';
 import { ClientsService } from './../services/clients.service';
 import { WalletsService } from './../services/wallets.service';
 import { Module } from '@nestjs/common';

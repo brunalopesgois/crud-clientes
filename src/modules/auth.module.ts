@@ -1,5 +1,5 @@
+import { Client } from './../entities/client.entity';
 import { JwtStrategy } from './../strategies/jwt.strategy';
-import { Client } from 'src/entities/client.entity';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { AuthController } from './../controllers/auth.controller';
 import { AuthService } from './../services/auth.service';

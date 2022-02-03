@@ -1,7 +1,7 @@
+import { Client } from './../entities/client.entity';
 import { UpdateWalletDto } from './../dtos/wallet/update-wallet.dto';
 import { CreateWalletDto } from './../dtos/wallet/create-wallet.dto';
 import { InvalidTransactionException } from './../exceptions/invalid-transaction.exception';
-import { Client } from 'src/entities/client.entity';
 import { Wallet } from './../entities/wallet.entity';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';

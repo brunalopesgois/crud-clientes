@@ -1,3 +1,4 @@
+import { Client } from './../entities/client.entity';
 import { JwtAuthGuard } from './../guards/jwt-auth.guard';
 import { UpdateClientDto } from '../dtos/client/update-client.dto';
 import { CreateClientDto } from '../dtos/client/create-client.dto';
@@ -13,7 +14,6 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { Client } from 'src/entities/client.entity';
 
 @Controller('clients')
 @UseGuards(JwtAuthGuard)

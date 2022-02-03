@@ -1,8 +1,8 @@
-import { Client } from 'src/entities/client.entity';
+import { hasher } from './../utils/password-hasher';
+import { Client } from './../entities/client.entity';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { Injectable } from '@nestjs/common';
 import { EntityRepository } from '@mikro-orm/mysql';
-import hasher from 'src/utils/password-hasher';
 
 @Injectable()
 export class AuthService {

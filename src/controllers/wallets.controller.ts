@@ -1,3 +1,5 @@
+import { Wallet } from './../entities/wallet.entity';
+import { JwtAuthGuard } from './../guards/jwt-auth.guard';
 import { UpdateWalletDto } from './../dtos/wallet/update-wallet.dto';
 import { CreateWalletDto } from './../dtos/wallet/create-wallet.dto';
 import { WalletsService } from './../services/wallets.service';
@@ -11,8 +13,6 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { Wallet } from 'src/entities/wallet.entity';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @Controller('wallets')
 @UseGuards(JwtAuthGuard)
