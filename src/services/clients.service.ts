@@ -75,7 +75,7 @@ export class ClientsService {
     });
     this.em.begin();
     try {
-      this.clientRepository.persistAndFlush(newClient);
+      await this.clientRepository.persistAndFlush(newClient);
       this.em.commit();
     } catch (error) {
       this.em.rollback();
