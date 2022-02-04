@@ -1,3 +1,4 @@
+import { InvalidTransactionException } from './../exceptions/invalid-transaction.exception';
 import { UpdateWalletDto } from './../dtos/wallet/update-wallet.dto';
 import { CreateWalletDto } from './../dtos/wallet/create-wallet.dto';
 import { Status } from './../enums/status.enum';
@@ -19,6 +20,27 @@ const updatedWallet = new Wallet(
   '222',
   '222222-2',
   Status.active,
+  0,
+);
+
+const walletWith5kDeposit = new Wallet(
+  1,
+  'wallet-1',
+  '001',
+  '222',
+  '222222-2',
+  Status.active,
+  5000,
+);
+
+const walletWith2kWithdraw = new Wallet(
+  1,
+  'wallet-1',
+  '001',
+  '222',
+  '222222-2',
+  Status.active,
+  3000,
 );
 
 describe('WalletsController', () => {
@@ -37,8 +59,8 @@ describe('WalletsController', () => {
             create: jest.fn(),
             update: jest.fn().mockResolvedValue(updatedWallet),
             delete: jest.fn().mockResolvedValue(undefined),
-            deposit: jest.fn(),
-            withdraw: jest.fn(),
+            deposit: jest.fn().mockResolvedValue(walletWith5kDeposit),
+            withdraw: jest.fn().mockResolvedValue(walletWith2kWithdraw),
           },
         },
       ],
@@ -188,8 +210,6 @@ describe('WalletsController', () => {
     it('should delete an existent wallet', async () => {
       const result = await controller.destroy(1);
 
-      console.log(result);
-
       expect(result).toEqual(undefined);
       expect(service.delete).toHaveBeenCalledTimes(1);
       expect(service.delete).toHaveBeenCalledWith(1);
@@ -199,6 +219,38 @@ describe('WalletsController', () => {
       jest.spyOn(service, 'delete').mockRejectedValueOnce(new Error());
 
       expect(controller.destroy(4)).rejects.toThrowError();
+    });
+  });
+
+  describe('deposit', () => {
+    it('should deposit a valid amount on wallet', async () => {
+      const result = await controller.deposit(1, 5000);
+
+      expect(result.balance).toEqual(5000);
+      expect(service.deposit).toHaveBeenCalledTimes(1);
+      expect(service.deposit).toHaveBeenCalledWith(1, 5000);
+    });
+
+    it('should throw an exception', () => {
+      jest.spyOn(service, 'deposit').mockRejectedValueOnce(new Error());
+
+      expect(controller.deposit).rejects.toThrowError();
+    });
+  });
+
+  describe('withdraw', () => {
+    it('should withdraw a valid amount on wallet', async () => {
+      const result = await controller.withdraw(1, 2000);
+
+      expect(result.balance).toEqual(3000);
+      expect(service.withdraw).toHaveBeenCalledTimes(1);
+      expect(service.withdraw).toHaveBeenCalledWith(1, 2000);
+    });
+
+    it('should throw an exception', () => {
+      jest.spyOn(service, 'withdraw').mockRejectedValueOnce(new Error());
+
+      expect(controller.withdraw).rejects.toThrowError();
     });
   });
 });

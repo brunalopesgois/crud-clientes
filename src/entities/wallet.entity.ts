@@ -49,6 +49,7 @@ export class Wallet {
     bankBranch: string,
     bankNumber: string,
     status: Status = Status.created,
+    balance?: number,
   ) {
     this.clientId = clientId;
     this.alias = alias;
@@ -56,6 +57,7 @@ export class Wallet {
     this.bankBranch = bankBranch;
     this.bankNumber = bankNumber;
     this.status = status;
+    this.balance = balance;
   }
 
   public deposit(value: number) {
