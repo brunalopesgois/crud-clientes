@@ -45,8 +45,8 @@ export class WalletsController {
   }
 
   @Delete(':id')
-  async destroy(@Param() params) {
-    await this.walletService.delete(params.id);
+  async destroy(@Param('id') id: number) {
+    await this.walletService.delete(id);
   }
 
   @Post(':id/deposit')
