@@ -1,4 +1,3 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
 import { UpdateClientDto } from './../dtos/client/update-client.dto';
 import { CreateClientDto } from './../dtos/client/create-client.dto';
 import { Client } from './../entities/client.entity';
@@ -60,7 +59,7 @@ describe('ClientsController', () => {
           useValue: {
             findAll: jest.fn().mockResolvedValue(clientEntityList),
             findById: jest.fn().mockResolvedValue(clientEntityList[0]),
-            create: jest.fn(),
+            create: jest.fn().mockResolvedValue(undefined),
             update: jest.fn().mockResolvedValue(updatedClient),
             delete: jest.fn().mockResolvedValue(undefined),
           },
@@ -78,7 +77,7 @@ describe('ClientsController', () => {
   });
 
   describe('index', () => {
-    it('should return a client list entity successfully', async () => {
+    it('should return a client entity list successfully', async () => {
       const result = await controller.index();
 
       expect(result).toEqual(clientEntityList);
@@ -137,6 +136,18 @@ describe('ClientsController', () => {
       expect(service.create).toHaveBeenCalledWith(dto);
     });
 
+    it('should throw an exception when creates an existent client', () => {
+      jest
+        .spyOn(service, 'create')
+        .mockRejectedValueOnce(
+          new Error('The client with email john@email.com already exists'),
+        );
+
+      expect(service.create).rejects.toThrowError(
+        'The client with email john@email.com already exists',
+      );
+    });
+
     it('should throw an exception', () => {
       const dto: CreateClientDto = {
         tax_id: '123456789-12',
@@ -166,6 +177,18 @@ describe('ClientsController', () => {
       expect(result).toEqual(updatedClient);
       expect(service.update).toHaveBeenCalledTimes(1);
       expect(service.update).toHaveBeenCalledWith(1, dto);
+    });
+
+    it('should throw an exception when client does not exist', () => {
+      jest
+        .spyOn(service, 'update')
+        .mockRejectedValueOnce(
+          new Error('The client with id 4 does not exist'),
+        );
+
+      expect(service.update).rejects.toThrowError(
+        'The client with id 4 does not exist',
+      );
     });
 
     it('should throw an exception', () => {
