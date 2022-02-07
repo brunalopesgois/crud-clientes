@@ -5,8 +5,7 @@ import { InvalidTransactionException } from './../exceptions/invalid-transaction
 import { Wallet } from './../entities/wallet.entity';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { EntityRepository } from '@mikro-orm/mysql';
-import { EntityManager } from '@mikro-orm/core';
+import { EntityRepository } from '@mikro-orm/postgresql';
 
 @Injectable()
 export class WalletsService {
@@ -15,7 +14,6 @@ export class WalletsService {
     private readonly walletRepository: EntityRepository<Wallet>,
     @InjectRepository(Client)
     private readonly clientRepository: EntityRepository<Client>,
-    private readonly em: EntityManager,
   ) {}
 
   async findAll(): Promise<Wallet[]> {
@@ -57,12 +55,9 @@ export class WalletsService {
       createWalletDto.bank_branch,
       createWalletDto.bank_number,
     );
-    this.em.begin();
     try {
       await this.walletRepository.persistAndFlush(wallet);
-      this.em.commit();
     } catch (error) {
-      this.em.rollback();
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -85,12 +80,9 @@ export class WalletsService {
       bankNumber: updateWalletDto.bank_number,
       status: updateWalletDto.status,
     });
-    this.em.begin();
     try {
       await this.walletRepository.persistAndFlush(newWallet);
-      this.em.commit();
     } catch (error) {
-      this.em.rollback();
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -99,12 +91,9 @@ export class WalletsService {
 
   async delete(id: number) {
     const wallet = await this.findById(id);
-    this.em.begin();
     try {
       await this.walletRepository.removeAndFlush(wallet);
-      this.em.commit();
     } catch (error) {
-      this.em.rollback();
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -119,13 +108,10 @@ export class WalletsService {
       );
     }
 
-    this.em.begin();
     try {
       wallet.deposit(amount);
       await this.walletRepository.persistAndFlush(wallet);
-      this.em.commit();
     } catch (error) {
-      this.em.rollback();
       if (error instanceof InvalidTransactionException) {
         throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
       }
@@ -146,13 +132,10 @@ export class WalletsService {
       );
     }
 
-    this.em.begin();
     try {
       wallet.withdraw(amount);
       await this.walletRepository.persistAndFlush(wallet);
-      this.em.commit();
     } catch (error) {
-      this.em.rollback();
       if (error instanceof InvalidTransactionException) {
         throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
       }

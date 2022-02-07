@@ -4,7 +4,7 @@ import { Client } from './../entities/client.entity';
 import { ClientsService } from './clients.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@mikro-orm/nestjs';
-import { EntityManager } from '@mikro-orm/core';
+import { EntityManager } from '@mikro-orm/postgresql';
 
 const clientEntityList: Client[] = [
   new Client(

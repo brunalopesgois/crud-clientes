@@ -4,15 +4,13 @@ import { UpdateClientDto } from '../dtos/client/update-client.dto';
 import { CreateClientDto } from '../dtos/client/create-client.dto';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { EntityRepository } from '@mikro-orm/mysql';
-import { EntityManager } from '@mikro-orm/core';
+import { EntityRepository } from '@mikro-orm/postgresql';
 
 @Injectable()
 export class ClientsService {
   constructor(
     @InjectRepository(Client)
     private readonly clientRepository: EntityRepository<Client>,
-    private readonly em: EntityManager,
   ) {}
 
   async findAll(): Promise<Client[]> {
@@ -44,12 +42,9 @@ export class ClientsService {
       password,
       createClientDto.phone,
     );
-    this.em.begin();
     try {
       await this.clientRepository.persistAndFlush(client);
-      this.em.commit();
     } catch (error) {
-      this.em.rollback();
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -73,12 +68,9 @@ export class ClientsService {
       password: password,
       phone: updateClientDto.phone,
     });
-    this.em.begin();
     try {
       await this.clientRepository.persistAndFlush(newClient);
-      this.em.commit();
     } catch (error) {
-      this.em.rollback();
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -87,12 +79,9 @@ export class ClientsService {
 
   async delete(id: number) {
     const client = await this.findById(id);
-    this.em.begin();
     try {
       await this.clientRepository.removeAndFlush(client);
-      this.em.commit();
     } catch (error) {
-      this.em.rollback();
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
