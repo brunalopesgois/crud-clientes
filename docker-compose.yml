@@ -4,7 +4,7 @@ services:
     image: postgres:latest
     container_name: crud-db
     ports:
-      - 5432:5432
+      - 5433:5432
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
@@ -25,12 +25,12 @@ services:
     networks:
       - nestjs-network
     ports:
-      - 3000:3000
+      - 3003:3000
     environment:
       DB: crud_db
       DB_USER: root
       DB_PW: root
-      DATABASE_URL: postgres://username:pgpassword@crud-db:5432/crud_db
+      DATABASE_URL: postgres://root:root@crud-db:5432/crud_db
     tty: true
     volumes:
      - .:/var/www/code/app
