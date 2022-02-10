@@ -46,8 +46,8 @@ describe('ClientsController (e2e)', () => {
     findAll: jest.fn().mockResolvedValue(mockClients),
     findOne: jest.fn(),
     assign: jest.fn(),
-    persistAndFlush: jest.fn(),
-    removeAndFlush: jest.fn(),
+    persistAndFlush: jest.fn().mockResolvedValue(undefined),
+    removeAndFlush: jest.fn().mockResolvedValue(undefined),
   };
   const mockAuthGuard: CanActivate = { canActivate: jest.fn(() => true) };
 
@@ -68,8 +68,22 @@ describe('ClientsController (e2e)', () => {
   it('/clients (GET)', () => {
     return request(app.getHttpServer())
       .get('/clients')
+      .expect('Content-Type', /json/)
       .expect(200)
-      .expect(mockClients)
-      .expect('Content-Type', /json/);
+      .expect(mockClients);
+  });
+
+  it('/clients (POST)', () => {
+    return request(app.getHttpServer())
+      .post('/clients')
+      .send({
+        tax_id: '123456789-10',
+        alias: 'John John',
+        email: 'john@email.com',
+        password: '123456',
+        phone: '11 90000-0000',
+      })
+      .expect(201)
+      .expect('');
   });
 });
