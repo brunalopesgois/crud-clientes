@@ -40,11 +40,22 @@ const mockClients = [
   },
 ];
 
+const mockClient = {
+  id: 1,
+  taxId: '123456789-12',
+  alias: 'John Doe',
+  email: 'john@email.com',
+  password: '123456',
+  phone: '11 90000-0000',
+  createdAt: '2022-02-07T14:35:14.985Z',
+  updateAt: null,
+};
+
 describe('ClientsController (e2e)', () => {
   let app: INestApplication;
   const mockRepository = {
     findAll: jest.fn().mockResolvedValue(mockClients),
-    findOne: jest.fn(),
+    findOne: jest.fn().mockResolvedValue(mockClient),
     assign: jest.fn(),
     persistAndFlush: jest.fn().mockResolvedValue(undefined),
     removeAndFlush: jest.fn().mockResolvedValue(undefined),
@@ -73,7 +84,17 @@ describe('ClientsController (e2e)', () => {
       .expect(mockClients);
   });
 
+  it('/clients/:id (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/clients/1')
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .expect(mockClient);
+  });
+
   it('/clients (POST)', () => {
+    jest.spyOn(mockRepository, 'findOne').mockResolvedValueOnce('');
+
     return request(app.getHttpServer())
       .post('/clients')
       .send({
