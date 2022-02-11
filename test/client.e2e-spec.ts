@@ -51,12 +51,23 @@ const mockClient = {
   updateAt: null,
 };
 
+const mockUpdatedClient = {
+  id: 1,
+  taxId: '123456789-12',
+  alias: 'John Doe',
+  email: 'newjohn@email.com',
+  password: '654321',
+  phone: '11 98888-8888',
+  createdAt: '2022-02-07T14:35:14.985Z',
+  updateAt: '2022-02-10T14:35:14.985Z',
+};
+
 describe('ClientsController (e2e)', () => {
   let app: INestApplication;
   const mockRepository = {
     findAll: jest.fn().mockResolvedValue(mockClients),
     findOne: jest.fn().mockResolvedValue(mockClient),
-    assign: jest.fn(),
+    assign: jest.fn().mockResolvedValue(mockUpdatedClient),
     persistAndFlush: jest.fn().mockResolvedValue(undefined),
     removeAndFlush: jest.fn().mockResolvedValue(undefined),
   };
@@ -93,7 +104,7 @@ describe('ClientsController (e2e)', () => {
   });
 
   it('/clients (POST)', () => {
-    jest.spyOn(mockRepository, 'findOne').mockResolvedValueOnce('');
+    jest.spyOn(mockRepository, 'findOne').mockResolvedValueOnce(undefined);
 
     return request(app.getHttpServer())
       .post('/clients')
@@ -105,6 +116,28 @@ describe('ClientsController (e2e)', () => {
         phone: '11 90000-0000',
       })
       .expect(201)
+      .expect('');
+  });
+
+  it('/clients/:id (PUT)', () => {
+    return request(app.getHttpServer())
+      .put('/clients/1')
+      .send({
+        tax_id: '123456789-10',
+        alias: 'John John',
+        email: 'newjohn@email.com',
+        password: '654321',
+        phone: '11 98888-8888',
+      })
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .expect(mockUpdatedClient);
+  });
+
+  it('/clients/:id (DELETE)', () => {
+    return request(app.getHttpServer())
+      .delete('/clients/1')
+      .expect(204)
       .expect('');
   });
 });
