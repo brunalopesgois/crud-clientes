@@ -224,11 +224,13 @@ describe('WalletsController', () => {
 
   describe('deposit', () => {
     it('should deposit a valid amount on wallet', async () => {
-      const result = await controller.deposit(1, 5000);
+      const transactWalletDto = { amount: 5000 };
+
+      const result = await controller.deposit(1, transactWalletDto);
 
       expect(result.balance).toEqual(5000);
       expect(service.deposit).toHaveBeenCalledTimes(1);
-      expect(service.deposit).toHaveBeenCalledWith(1, 5000);
+      expect(service.deposit).toHaveBeenCalledWith(1, transactWalletDto);
     });
 
     it('should throw an exception', () => {
@@ -240,11 +242,13 @@ describe('WalletsController', () => {
 
   describe('withdraw', () => {
     it('should withdraw a valid amount on wallet', async () => {
-      const result = await controller.withdraw(1, 2000);
+      const transactWalletDto = { amount: 2000 };
+
+      const result = await controller.withdraw(1, transactWalletDto);
 
       expect(result.balance).toEqual(3000);
       expect(service.withdraw).toHaveBeenCalledTimes(1);
-      expect(service.withdraw).toHaveBeenCalledWith(1, 2000);
+      expect(service.withdraw).toHaveBeenCalledWith(1, transactWalletDto);
     });
 
     it('should throw an exception', () => {
