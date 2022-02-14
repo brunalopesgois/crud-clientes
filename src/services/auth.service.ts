@@ -1,9 +1,9 @@
+import { EntityRepository } from '@mikro-orm/postgresql';
 import { AuthenticateClientDto } from './../dtos/client/authenticate-client.dto';
 import { hasher } from './../utils/password-hasher';
 import { Client } from './../entities/client.entity';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { EntityRepository } from '@mikro-orm/mysql';
 
 @Injectable()
 export class AuthService {
