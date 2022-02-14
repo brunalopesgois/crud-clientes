@@ -20,7 +20,7 @@ export class Wallet {
   @ApiProperty()
   status: Status;
 
-  @Property({ default: 0 })
+  @Property({ default: 0, nullable: true })
   @ApiProperty()
   balance?: number;
 
