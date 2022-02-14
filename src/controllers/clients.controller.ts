@@ -1,3 +1,4 @@
+import { ErrorSwagger } from './../swagger/error.swagger';
 import { ClientSwagger } from './../swagger/client.swagger';
 import { Client } from './../entities/client.entity';
 import { JwtAuthGuard } from './../guards/jwt-auth.guard';
@@ -32,6 +33,11 @@ export class ClientsController {
     type: ClientSwagger,
     isArray: true,
   })
+  @ApiResponse({
+    status: 500,
+    description: 'Return an error for a server side problem',
+    type: ErrorSwagger,
+  })
   async index(): Promise<Client[]> {
     return this.clientService.findAll();
   }
@@ -43,6 +49,11 @@ export class ClientsController {
     description: 'Return a client successfully',
     type: ClientSwagger,
   })
+  @ApiResponse({
+    status: 500,
+    description: 'Return an error for a server side problem',
+    type: ErrorSwagger,
+  })
   async show(@Param('id') id: number): Promise<Client> {
     return this.clientService.findById(id);
   }
@@ -52,6 +63,16 @@ export class ClientsController {
   @ApiResponse({
     status: 201,
     description: 'Creates a client successfully',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Return an error for invalid payload',
+    type: ErrorSwagger,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Return an error for a server side problem',
+    type: ErrorSwagger,
   })
   async store(@Body() createClientDto: CreateClientDto) {
     await this.clientService.create(createClientDto);
@@ -63,6 +84,21 @@ export class ClientsController {
     status: 200,
     description: 'Return an updated client',
     type: ClientSwagger,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Return an error for invalid payload',
+    type: ErrorSwagger,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Return an error for a not found client',
+    type: ErrorSwagger,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Return an error for a server side problem',
+    type: ErrorSwagger,
   })
   async update(
     @Param('id') id: number,
@@ -77,6 +113,16 @@ export class ClientsController {
   @ApiResponse({
     status: 204,
     description: 'Removes a client successfully',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Return an error for a not found client',
+    type: ErrorSwagger,
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Return an error for a server side problem',
+    type: ErrorSwagger,
   })
   async destroy(@Param('id') id: number) {
     await this.clientService.delete(id);

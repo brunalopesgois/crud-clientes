@@ -1,7 +1,7 @@
 import { hasher } from './../utils/password-hasher';
 import { Client } from './../entities/client.entity';
 import { InjectRepository } from '@mikro-orm/nestjs';
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { EntityRepository } from '@mikro-orm/mysql';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class AuthService {
     });
 
     if (!client) {
-      throw new Error('invalid email');
+      throw new HttpException('invalid email', HttpStatus.BAD_REQUEST);
     }
 
     const validPassword = await hasher.validatePassword(
@@ -26,7 +26,7 @@ export class AuthService {
     );
 
     if (!validPassword) {
-      throw new Error('invalid password');
+      throw new HttpException('invalid password', HttpStatus.BAD_REQUEST);
     }
 
     return client;

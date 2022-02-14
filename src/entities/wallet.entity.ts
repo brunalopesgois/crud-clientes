@@ -1,6 +1,7 @@
 import { InvalidTransactionException } from './../exceptions/invalid-transaction.exception';
 import { Status } from './../enums/status.enum';
 import { DateType, Entity, Enum, PrimaryKey, Property } from '@mikro-orm/core';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class Wallet {
@@ -8,24 +9,31 @@ export class Wallet {
   id: number;
 
   @Property({ name: 'client_id' })
+  @ApiProperty()
   clientId: number;
 
   @Property({ nullable: true })
+  @ApiProperty()
   alias?: string;
 
   @Enum(() => Status)
+  @ApiProperty()
   status: Status;
 
   @Property({ default: 0 })
+  @ApiProperty()
   balance?: number;
 
   @Property()
+  @ApiProperty()
   ispb?: string;
 
   @Property({ name: 'bank_branch' })
+  @ApiProperty()
   bankBranch?: string;
 
   @Property({ name: 'bank_number' })
+  @ApiProperty()
   bankNumber?: string;
 
   @Property({
