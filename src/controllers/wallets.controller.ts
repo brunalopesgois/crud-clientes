@@ -1,3 +1,4 @@
+import { TransactWalletDto } from './../dtos/wallet/transact-wallet.dto';
 import { WalletSwagger } from './../swagger/wallet.swagger';
 import { ErrorSwagger } from './../swagger/error.swagger';
 import { Wallet } from './../entities/wallet.entity';
@@ -135,17 +136,17 @@ export class WalletsController {
   @ApiOperation({ summary: 'Makes a deposit transaction on wallet' })
   async deposit(
     @Param('id') id: number,
-    @Body('amount') amount: number,
+    @Body() transactWalletDto: TransactWalletDto,
   ): Promise<Wallet> {
-    return this.walletService.deposit(id, amount);
+    return this.walletService.deposit(id, transactWalletDto);
   }
 
   @Post(':id/withdraw')
   @ApiOperation({ summary: 'Makes a withdraw transaction on wallet' })
   async withdraw(
     @Param('id') id: number,
-    @Body('amount') amount: number,
+    @Body() transactWalletDto: TransactWalletDto,
   ): Promise<Wallet> {
-    return this.walletService.withdraw(id, amount);
+    return this.walletService.withdraw(id, transactWalletDto);
   }
 }

@@ -1,3 +1,4 @@
+import { TransactWalletDto } from './../dtos/wallet/transact-wallet.dto';
 import { Client } from './../entities/client.entity';
 import { UpdateWalletDto } from './../dtos/wallet/update-wallet.dto';
 import { CreateWalletDto } from './../dtos/wallet/create-wallet.dto';
@@ -98,7 +99,10 @@ export class WalletsService {
     }
   }
 
-  async deposit(walletId: number, amount: number): Promise<Wallet> {
+  async deposit(
+    walletId: number,
+    transactWalletDto: TransactWalletDto,
+  ): Promise<Wallet> {
     const wallet = await this.walletRepository.findOne(walletId);
 
     if (!wallet) {
@@ -109,7 +113,7 @@ export class WalletsService {
     }
 
     try {
-      wallet.deposit(amount);
+      wallet.deposit(transactWalletDto.amount);
       await this.walletRepository.persistAndFlush(wallet);
     } catch (error) {
       if (error instanceof InvalidTransactionException) {
@@ -122,7 +126,10 @@ export class WalletsService {
     return wallet;
   }
 
-  async withdraw(walletId: number, amount: number): Promise<Wallet> {
+  async withdraw(
+    walletId: number,
+    transactWalletDto: TransactWalletDto,
+  ): Promise<Wallet> {
     const wallet = await this.walletRepository.findOne(walletId);
 
     if (!wallet) {
@@ -133,7 +140,7 @@ export class WalletsService {
     }
 
     try {
-      wallet.withdraw(amount);
+      wallet.withdraw(transactWalletDto.amount);
       await this.walletRepository.persistAndFlush(wallet);
     } catch (error) {
       if (error instanceof InvalidTransactionException) {
