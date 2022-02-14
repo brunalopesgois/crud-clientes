@@ -1,4 +1,5 @@
 import { Options } from '@mikro-orm/core';
+
 const config = {
   entities: ['dist/**/*.entity.js'],
   entitiesTs: ['src/**/*.entity.ts'],
@@ -17,6 +18,14 @@ const config = {
     dropTables: true,
     safe: true,
     emit: 'ts',
+  },
+  seeder: {
+    path: './seeders',
+    pathTs: undefined,
+    defaultSeeder: 'DatabaseSeeder',
+    glob: '!(*.d).{js,ts}',
+    emit: 'ts',
+    fileName: (className: string) => className,
   },
 } as Options;
 
