@@ -22,7 +22,8 @@
     "start:docker": "docker exec -it crud-app npm run start:dev",
     "create:schema": "docker exec -it crud-app npx ts-node create-schema",
     "create:migration": "docker exec -it crud-app npx mikro-orm migration:create",
-    "migrate": "docker exec -it crud-app npx mikro-orm migration:up"
+    "migrate": "docker exec -it crud-app npx mikro-orm migration:up",
+    "seed": "docker exec -it crud-app npx mikro-orm seeder:run"
   },
   "dependencies": {
     "@mikro-orm/cli": "^5.0.1",
