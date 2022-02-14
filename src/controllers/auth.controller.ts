@@ -1,7 +1,8 @@
+import { TokenSwagger } from './../swagger/token.swagger';
 import { AuthService } from './../services/auth.service';
 import { Body, Controller, Post } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 
 @Controller('login')
 @ApiTags('auth')
@@ -13,6 +14,11 @@ export class AuthController {
 
   @Post()
   @ApiOperation({ summary: 'Generates a bearer token' })
+  @ApiResponse({
+    status: 201,
+    description: 'Return a token successfully',
+    type: TokenSwagger,
+  })
   async signIn(@Body() clientData): Promise<{ token: string }> {
     const user = await this.authService.checkCredentials(clientData);
 

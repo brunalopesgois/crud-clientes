@@ -1,4 +1,4 @@
-import { IndexClientSwagger } from './../swagger/index-client.swagger';
+import { ClientSwagger } from './../swagger/client.swagger';
 import { Client } from './../entities/client.entity';
 import { JwtAuthGuard } from './../guards/jwt-auth.guard';
 import { UpdateClientDto } from '../dtos/client/update-client.dto';
@@ -29,7 +29,8 @@ export class ClientsController {
   @ApiResponse({
     status: 200,
     description: 'Return all clients successfully',
-    type: IndexClientSwagger,
+    type: ClientSwagger,
+    isArray: true,
   })
   async index(): Promise<Client[]> {
     return this.clientService.findAll();
@@ -40,7 +41,7 @@ export class ClientsController {
   @ApiResponse({
     status: 200,
     description: 'Return a client successfully',
-    type: IndexClientSwagger,
+    type: ClientSwagger,
   })
   async show(@Param('id') id: number): Promise<Client> {
     return this.clientService.findById(id);
@@ -61,7 +62,7 @@ export class ClientsController {
   @ApiResponse({
     status: 200,
     description: 'Return an updated client',
-    type: IndexClientSwagger,
+    type: ClientSwagger,
   })
   async update(
     @Param('id') id: number,
