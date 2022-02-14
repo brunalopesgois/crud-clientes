@@ -5,26 +5,33 @@ import {
   Property,
   Unique,
 } from '@mikro-orm/core';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class Client {
   @PrimaryKey()
+  @ApiProperty()
   id: number;
 
   @Property({ name: 'tax_id' })
+  @ApiProperty()
   taxId: string;
 
   @Property()
+  @ApiProperty()
   alias: string;
 
   @Property()
   @Unique()
+  @ApiProperty()
   email: string;
 
   @Property({ hidden: true })
+  @ApiProperty()
   password: string;
 
   @Property()
+  @ApiProperty()
   phone: string;
 
   @Property({
@@ -32,14 +39,16 @@ export class Client {
     type: DateType,
     nullable: true,
   })
-  createdAt = new Date();
+  @ApiProperty()
+  createdAt: Date = new Date();
 
   @Property({
     onUpdate: () => new Date(),
     type: DateType,
     nullable: true,
   })
-  updatedAt = new Date();
+  @ApiProperty()
+  updatedAt: Date = new Date();
 
   constructor(
     taxId: string,
