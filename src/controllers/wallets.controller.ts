@@ -15,9 +15,15 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiTags,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 
 @Controller('wallets')
+@ApiBearerAuth('token')
 @UseGuards(JwtAuthGuard)
 @ApiTags('wallets')
 export class WalletsController {

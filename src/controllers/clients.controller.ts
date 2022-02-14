@@ -17,9 +17,15 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @Controller('clients')
+@ApiBearerAuth('token')
 @UseGuards(JwtAuthGuard)
 @ApiTags('clients')
 export class ClientsController {
