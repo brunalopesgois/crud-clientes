@@ -1,3 +1,4 @@
+import { AuthenticateClientDto } from './../dtos/client/authenticate-client.dto';
 import { hasher } from './../utils/password-hasher';
 import { Client } from './../entities/client.entity';
 import { InjectRepository } from '@mikro-orm/nestjs';
@@ -11,9 +12,11 @@ export class AuthService {
     private readonly clientRepository: EntityRepository<Client>,
   ) {}
 
-  async checkCredentials(data): Promise<Client> {
+  async checkCredentials(
+    authenticateClientDto: AuthenticateClientDto,
+  ): Promise<Client> {
     const client = await this.clientRepository.findOne({
-      email: data.email,
+      email: authenticateClientDto.email,
     });
 
     if (!client) {
@@ -21,7 +24,7 @@ export class AuthService {
     }
 
     const validPassword = await hasher.validatePassword(
-      data.password,
+      authenticateClientDto.password,
       client.password,
     );
 

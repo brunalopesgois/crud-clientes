@@ -1,3 +1,4 @@
+import { AuthenticateClientDto } from './../dtos/client/authenticate-client.dto';
 import { ErrorSwagger } from './../swagger/error.swagger';
 import { TokenSwagger } from './../swagger/token.swagger';
 import { AuthService } from './../services/auth.service';
@@ -30,8 +31,10 @@ export class AuthController {
     description: 'Return an error for a server side problem',
     type: ErrorSwagger,
   })
-  async signIn(@Body() clientData): Promise<{ token: string }> {
-    const user = await this.authService.checkCredentials(clientData);
+  async signIn(
+    @Body() authenticateClientDto: AuthenticateClientDto,
+  ): Promise<{ token: string }> {
+    const user = await this.authService.checkCredentials(authenticateClientDto);
 
     const jwtPayload = {
       email: user.email,
