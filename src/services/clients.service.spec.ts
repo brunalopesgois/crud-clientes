@@ -179,9 +179,7 @@ describe('ClientsService', () => {
       const result = await service.delete(1);
 
       expect(result).toBeUndefined();
-      expect(repository.removeAndFlush).toHaveBeenCalledTimes(
-        clientEntityList[0].id,
-      );
+      expect(repository.removeAndFlush).toHaveBeenCalledTimes(1);
       expect(repository.removeAndFlush).toHaveBeenCalledWith(
         clientEntityList[0],
       );

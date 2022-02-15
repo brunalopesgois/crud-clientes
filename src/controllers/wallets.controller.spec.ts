@@ -1,4 +1,3 @@
-import { InvalidTransactionException } from './../exceptions/invalid-transaction.exception';
 import { UpdateWalletDto } from './../dtos/wallet/update-wallet.dto';
 import { CreateWalletDto } from './../dtos/wallet/create-wallet.dto';
 import { Status } from './../enums/status.enum';
