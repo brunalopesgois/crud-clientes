@@ -76,6 +76,32 @@ const mockUpdatedWallet = {
 
 const mockClient = {};
 
+const mockPositiveBalanceWallet = {
+  id: 1,
+  clientId: 1,
+  alias: 'wallet-1',
+  status: Status.active,
+  balance: 10000,
+  ispb: '001',
+  bankBranch: '1212',
+  bankNumber: '1212121-2',
+  createdAt: '2022-02-08T10:40:27.687Z',
+  updatedAt: '2022-02-14T13:10:30.985Z',
+};
+
+const mockWithdrawWallet = {
+  id: 1,
+  clientId: 1,
+  alias: 'wallet-1',
+  status: 'active',
+  balance: 0,
+  ispb: '001',
+  bankBranch: '1212',
+  bankNumber: '1212121-2',
+  createdAt: '2022-02-08T10:40:27.687Z',
+  updatedAt: '2022-02-14T13:10:30.985Z',
+};
+
 describe('WalletsController (e2e)', () => {
   let app: INestApplication;
   const mockClientRepository = {
@@ -232,6 +258,94 @@ describe('WalletsController (e2e)', () => {
 
     return request(app.getHttpServer())
       .delete('/wallets/1')
+      .expect(404)
+      .expect({
+        statusCode: 404,
+        message: 'The wallet with id 1 does not exist',
+      });
+  });
+
+  it('/wallets/:id/deposit (POST)', () => {
+    jest
+      .spyOn(mockWalletRepository, 'findOne')
+      .mockResolvedValueOnce(mockUpdatedWallet);
+
+    jest
+      .spyOn(mockWalletRepository, 'persistAndFlush')
+      .mockResolvedValueOnce(mockPositiveBalanceWallet);
+
+    return request(app.getHttpServer())
+      .post('/wallets/1/deposit')
+      .send({ amount: 10000 })
+      .expect(201)
+      .expect(mockPositiveBalanceWallet);
+  });
+
+  it('/wallets/:id/deposit (POST) 400 --> invalid amount', () => {
+    jest
+      .spyOn(mockWalletRepository, 'findOne')
+      .mockResolvedValueOnce(mockUpdatedWallet);
+
+    return request(app.getHttpServer())
+      .post('/wallets/1/deposit')
+      .send({ amount: -15000 })
+      .expect(400)
+      .expect({
+        statusCode: 400,
+        message: 'Invalid amount',
+      });
+  });
+
+  it('/wallets/:id/deposit (POST) 404 --> wallet not found', () => {
+    jest
+      .spyOn(mockWalletRepository, 'findOne')
+      .mockResolvedValueOnce(undefined);
+
+    return request(app.getHttpServer())
+      .post('/wallets/1/deposit')
+      .send({ amount: 10000 })
+      .expect(404)
+      .expect({
+        statusCode: 404,
+        message: 'The wallet with id 1 does not exist',
+      });
+  });
+
+  it('/wallets/:id/withdraw (POST)', () => {
+    jest
+      .spyOn(mockWalletRepository, 'findOne')
+      .mockResolvedValueOnce(mockPositiveBalanceWallet);
+
+    return request(app.getHttpServer())
+      .post('/wallets/1/withdraw')
+      .send({ amount: 10000 })
+      .expect(201)
+      .expect(mockWithdrawWallet);
+  });
+
+  it('/wallets/:id/withdraw (POST) 400 --> insufficient funds', () => {
+    jest
+      .spyOn(mockWalletRepository, 'findOne')
+      .mockResolvedValueOnce(mockWithdrawWallet);
+
+    return request(app.getHttpServer())
+      .post('/wallets/1/withdraw')
+      .send({ amount: 10000 })
+      .expect(400)
+      .expect({
+        statusCode: 400,
+        message: 'Insufficient funds',
+      });
+  });
+
+  it('/wallets/:id/withdraw (POST) 404 --> wallet not found', () => {
+    jest
+      .spyOn(mockWalletRepository, 'findOne')
+      .mockResolvedValueOnce(undefined);
+
+    return request(app.getHttpServer())
+      .post('/wallets/1/withdraw')
+      .send({ amount: 10000 })
       .expect(404)
       .expect({
         statusCode: 404,
