@@ -119,6 +119,35 @@ describe('ClientsController (e2e)', () => {
       .expect('');
   });
 
+  it('/clients (POST) 400 --> client already exists', () => {
+    return request(app.getHttpServer())
+      .post('/clients')
+      .send({
+        tax_id: '123456789-10',
+        alias: 'John John',
+        email: 'john@email.com',
+        password: '123456',
+        phone: '11 90000-0000',
+      })
+      .expect('Content-Type', /json/)
+      .expect(400)
+      .expect({
+        statusCode: 400,
+        message: 'The client with email john@email.com already exists',
+      });
+  });
+
+  // TODO: validação de request
+  // it('/clients (POST) 400 --> invalid payload', () => {
+  //   jest.spyOn(mockRepository, 'findOne').mockResolvedValueOnce(undefined);
+
+  //   return request(app.getHttpServer())
+  //     .post('/clients')
+  //     .send()
+  //     .expect(400)
+  //     .expect('');
+  // });
+
   it('/clients/:id (PUT)', () => {
     return request(app.getHttpServer())
       .put('/clients/1')
@@ -134,10 +163,52 @@ describe('ClientsController (e2e)', () => {
       .expect(mockUpdatedClient);
   });
 
+  // TODO: validação de request
+  // it('/clients/:id (PUT) 400 --> invalid payload', () => {
+  //   return request(app.getHttpServer())
+  //     .put('/clients/1')
+  //     .send()
+  //     .expect('Content-Type', /json/)
+  //     .expect(400)
+  //     .expect('');
+  // });
+
+  it('/clients/:id (PUT) 404 --> client not found', () => {
+    jest.spyOn(mockRepository, 'findOne').mockResolvedValueOnce(undefined);
+
+    return request(app.getHttpServer())
+      .put('/clients/1')
+      .send({
+        tax_id: '123456789-10',
+        alias: 'John John',
+        email: 'newjohn@email.com',
+        password: '654321',
+        phone: '11 98888-8888',
+      })
+      .expect('Content-Type', /json/)
+      .expect(404)
+      .expect({
+        statusCode: 404,
+        message: 'The client with id 1 does not exist',
+      });
+  });
+
   it('/clients/:id (DELETE)', () => {
     return request(app.getHttpServer())
       .delete('/clients/1')
       .expect(204)
       .expect('');
+  });
+
+  it('/clients/:id (DELETE) 404 --> client not found', () => {
+    jest.spyOn(mockRepository, 'findOne').mockResolvedValueOnce(undefined);
+
+    return request(app.getHttpServer())
+      .delete('/clients/1')
+      .expect(404)
+      .expect({
+        statusCode: 404,
+        message: 'The client with id 1 does not exist',
+      });
   });
 });
