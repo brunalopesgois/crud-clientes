@@ -111,7 +111,7 @@ export class WalletsService {
     walletId: number,
     transactWalletDto: TransactWalletDto,
   ): Promise<Wallet> {
-    const wallet = await this.walletRepository.findOne(walletId);
+    let wallet = await this.walletRepository.findOne(walletId);
 
     if (!wallet) {
       throw new HttpException(
@@ -121,7 +121,7 @@ export class WalletsService {
     }
 
     try {
-      wallet.deposit(transactWalletDto.amount);
+      wallet = this.depositAmount(transactWalletDto.amount, wallet);
       await this.walletRepository.persistAndFlush(wallet);
     } catch (error) {
       if (error instanceof InvalidTransactionException) {
@@ -138,7 +138,7 @@ export class WalletsService {
     walletId: number,
     transactWalletDto: TransactWalletDto,
   ): Promise<Wallet> {
-    const wallet = await this.walletRepository.findOne(walletId);
+    let wallet = await this.walletRepository.findOne(walletId);
 
     if (!wallet) {
       throw new HttpException(
@@ -148,7 +148,7 @@ export class WalletsService {
     }
 
     try {
-      wallet.withdraw(transactWalletDto.amount);
+      wallet = this.withdrawAmount(transactWalletDto.amount, wallet);
       await this.walletRepository.persistAndFlush(wallet);
     } catch (error) {
       if (error instanceof InvalidTransactionException) {
@@ -157,6 +157,24 @@ export class WalletsService {
 
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    return wallet;
+  }
+
+  private depositAmount(value: number, wallet: Wallet): Wallet {
+    if (value <= 0) {
+      throw new InvalidTransactionException('Invalid amount');
+    }
+    wallet.balance += value;
+
+    return wallet;
+  }
+
+  private withdrawAmount(value: number, wallet: Wallet): Wallet {
+    if (wallet.balance <= 0 || wallet.balance < value) {
+      throw new InvalidTransactionException('Insufficient funds');
+    }
+    wallet.balance -= value;
 
     return wallet;
   }
