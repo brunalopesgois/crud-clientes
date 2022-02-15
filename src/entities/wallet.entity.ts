@@ -1,4 +1,3 @@
-import { InvalidTransactionException } from './../exceptions/invalid-transaction.exception';
 import { Status } from './../enums/status.enum';
 import { DateType, Entity, Enum, PrimaryKey, Property } from '@mikro-orm/core';
 import { ApiProperty } from '@nestjs/swagger';
@@ -66,19 +65,5 @@ export class Wallet {
     this.bankNumber = bankNumber;
     this.status = status;
     this.balance = balance;
-  }
-
-  public deposit(value: number) {
-    if (value <= 0) {
-      throw new InvalidTransactionException('Invalid amount');
-    }
-    this.balance += value;
-  }
-
-  public withdraw(value: number) {
-    if (this.balance <= 0 || this.balance < value) {
-      throw new InvalidTransactionException('Insufficient funds');
-    }
-    this.balance -= value;
   }
 }
