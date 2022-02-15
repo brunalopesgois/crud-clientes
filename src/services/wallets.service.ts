@@ -92,6 +92,14 @@ export class WalletsService {
 
   async delete(id: number) {
     const wallet = await this.findById(id);
+
+    if (!wallet) {
+      throw new HttpException(
+        `The wallet with id ${id} does not exist`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     try {
       await this.walletRepository.removeAndFlush(wallet);
     } catch (error) {

@@ -79,6 +79,14 @@ export class ClientsService {
 
   async delete(id: number) {
     const client = await this.findById(id);
+
+    if (!client) {
+      throw new HttpException(
+        `The client with id ${id} does not exist`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     try {
       await this.clientRepository.removeAndFlush(client);
     } catch (error) {
