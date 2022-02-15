@@ -111,7 +111,7 @@ export class WalletsService {
     walletId: number,
     transactWalletDto: TransactWalletDto,
   ): Promise<Wallet> {
-    let wallet = await this.walletRepository.findOne(walletId);
+    let wallet = await this.findById(walletId);
 
     if (!wallet) {
       throw new HttpException(
@@ -138,7 +138,7 @@ export class WalletsService {
     walletId: number,
     transactWalletDto: TransactWalletDto,
   ): Promise<Wallet> {
-    let wallet = await this.walletRepository.findOne(walletId);
+    let wallet = await this.findById(walletId);
 
     if (!wallet) {
       throw new HttpException(
