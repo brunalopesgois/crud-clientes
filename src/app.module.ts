@@ -3,7 +3,7 @@ import { AuthModule } from './modules/auth.module';
 import { WalletModule } from './modules/wallet.module';
 import { ClientModule } from './modules/client.module';
 import { Module } from '@nestjs/common';
-// import { AppController } from './app.controller';
+import { AppController } from './app.controller';
 // import { AppService } from './app.service';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -18,7 +18,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     WalletModule,
     AuthModule,
   ],
-  // controllers: [AppController],
+  controllers: [AppController],
   // providers: [AppService],
 })
 export class AppModule {}

@@ -11,51 +11,51 @@ services:
       POSTGRES_DB: crud_db
     tty: true
     volumes:
-      - pg-data:/var/lib/postgres 
+      - pg-data:/var/lib/postgres
     networks:
       - nestjs-network
 
-  nestjs:
-    build:
-      dockerfile: ./docker/Dockerfile
-      context: .
-    image: crud-clientes
-    container_name: crud-app
-    # command: npm run start:dev
+  # nestjs:
+  #   build:
+  #     dockerfile: ./docker/Dockerfile
+  #     context: .
+  #   image: crud-clientes
+  #   container_name: crud-app
+  #   # command: npm run start:dev
+  #   networks:
+  #     - nestjs-network
+  #   ports:
+  #     - 3003:3000
+  #   environment:
+  #     DB: crud_db
+  #     DB_USER: root
+  #     DB_PW: root
+  #     DATABASE_URL: postgres://root:root@crud-db:5432/crud_db
+  #   tty: true
+  #   volumes:
+  #    - .:/var/www/code/app
+  #    - ./node_modules:/var/www/code/app/node_modules
+  #   links:
+  #     - postgresdb
+  metabase:
+    volumes:
+      - ./metabase-data:/metabase-data
+    environment:
+      - MB_DB_FILE=/metabase-data/metabase.db
+      - MB_DB_TYPE=postgres
+      - MB_DB_DBNAME=crud_db
+      - MB_DB_PORT=5432
+      - MB_DB_USER=root
+      - MB_DB_PASS=root
+      - MB_DB_HOST=postgresdb
+    ports:
+      - 3000:3000
+    image: metabase/metabase
+    restart: always
+    depends_on:
+      - postgresdb
     networks:
       - nestjs-network
-    ports:
-      - 3003:3000
-    environment:
-      DB: crud_db
-      DB_USER: root
-      DB_PW: root
-      DATABASE_URL: postgres://root:root@crud-db:5432/crud_db
-    tty: true
-    volumes:
-     - .:/var/www/code/app
-     - ./node_modules:/var/www/code/app/node_modules
-    links:
-      - postgresdb
-  metabase:
-      volumes:
-        - ./metabase-data:/metabase-data
-      environment:
-        - MB_DB_FILE=/metabase-data/metabase.db
-        - MB_DB_TYPE=postgres
-        - MB_DB_DBNAME=crud_db
-        - MB_DB_PORT=5432
-        - MB_DB_USER=root
-        - MB_DB_PASS=root
-        - MB_DB_HOST=postgresdb
-      ports:
-        - 3000:3000
-      image: metabase/metabase
-      restart: always
-      depends_on: 
-        - postgresdb
-      networks:
-        - nestjs-network
 networks:
   nestjs-network:
     driver: bridge

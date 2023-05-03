@@ -4,10 +4,13 @@ import { MikroORM } from '@mikro-orm/core';
   const orm = await MikroORM.init({
     entities: ['./dist/entities'],
     entitiesTs: ['./src/entities'],
-    dbName: process.env.DB,
-    user: process.env.DB_USER,
-    password: process.env.DB_PW,
-    clientUrl: process.env.DATABASE_URL,
+    dbName: process.env.DB || 'crud_db',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PW || 'root',
+    clientUrl:
+      process.env.DATABASE_URL || 'postgres://root:root@crud_db:5432/crud_db',
+    host: 'localhost',
+    port: 5432,
     type: 'postgresql',
   });
   const generator = orm.getSchemaGenerator();
