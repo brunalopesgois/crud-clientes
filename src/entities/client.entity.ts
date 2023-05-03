@@ -1,6 +1,8 @@
+import { Status } from './../enums/status.enum';
 import {
-  DateType,
+  DateTimeType,
   Entity,
+  Enum,
   PrimaryKey,
   Property,
   Unique,
@@ -34,9 +36,13 @@ export class Client {
   @ApiProperty()
   phone: string;
 
+  @Enum(() => Status)
+  @ApiProperty()
+  status: Status;
+
   @Property({
     onCreate: () => new Date(),
-    type: DateType,
+    type: DateTimeType,
     nullable: true,
   })
   @ApiProperty()
@@ -44,11 +50,18 @@ export class Client {
 
   @Property({
     onUpdate: () => new Date(),
-    type: DateType,
+    type: DateTimeType,
     nullable: true,
   })
   @ApiProperty()
-  updatedAt: Date = new Date();
+  updatedAt?: Date;
+
+  @Property({
+    type: DateTimeType,
+    nullable: true,
+  })
+  @ApiProperty()
+  expiresAt: Date;
 
   constructor(
     taxId: string,
@@ -56,6 +69,8 @@ export class Client {
     email: string,
     password: string,
     phone: string,
+    status: Status,
+    expiresAt?: Date,
     id?: number,
     createdAt?: Date,
     updatedAt?: Date,
@@ -65,6 +80,8 @@ export class Client {
     this.email = email;
     this.password = password;
     this.phone = phone;
+    this.status = status;
+    this.expiresAt = expiresAt;
     this.id = id;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;

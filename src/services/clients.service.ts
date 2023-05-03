@@ -1,3 +1,4 @@
+import { Status } from './../enums/status.enum';
 import { hasher } from './../utils/password-hasher';
 import { Client } from './../entities/client.entity';
 import { UpdateClientDto } from '../dtos/client/update-client.dto';
@@ -5,12 +6,14 @@ import { CreateClientDto } from '../dtos/client/create-client.dto';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { EntityRepository } from '@mikro-orm/postgresql';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class ClientsService {
   constructor(
     @InjectRepository(Client)
     private readonly clientRepository: EntityRepository<Client>,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async findAll(): Promise<Client[]> {
@@ -35,15 +38,28 @@ export class ClientsService {
 
     const password = await hasher.hashPassword(createClientDto.password);
 
+    const current = new Date(Date.now());
+
     const client = new Client(
       createClientDto.tax_id,
       createClientDto.alias,
       createClientDto.email,
       password,
       createClientDto.phone,
+      Status.active,
+      new Date(current.getTime() + 180000),
     );
+
     try {
       await this.clientRepository.persistAndFlush(client);
+      const createdClient = await this.clientRepository.findOne({
+        email: client.email,
+      });
+
+      this.eventEmitter.emit('client.expired', {
+        clientId: createdClient.id,
+        expirationTime: 180000,
+      });
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -92,5 +108,27 @@ export class ClientsService {
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  async updateStatus(id: number, status: Status): Promise<Client> {
+    const existentClient = await this.findById(id);
+
+    if (!existentClient) {
+      throw new HttpException(
+        `The client with id ${id} does not exist`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const newClient = this.clientRepository.assign(existentClient, {
+      status,
+    });
+    try {
+      await this.clientRepository.persistAndFlush(newClient);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    return newClient;
   }
 }

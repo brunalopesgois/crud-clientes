@@ -3,6 +3,8 @@ import { Options } from '@mikro-orm/core';
 const config = {
   entities: ['dist/**/*.entity.js'],
   entitiesTs: ['src/**/*.entity.ts'],
+  allowGlobalContext: true,
+  debug: true,
   dbName: process.env.DB,
   user: process.env.DB_USER,
   password: process.env.DB_PW,

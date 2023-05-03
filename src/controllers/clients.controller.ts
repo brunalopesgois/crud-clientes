@@ -26,7 +26,7 @@ import {
 
 @Controller('clients')
 @ApiBearerAuth('token')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @ApiTags('clients')
 export class ClientsController {
   constructor(private clientService: ClientsService) {}

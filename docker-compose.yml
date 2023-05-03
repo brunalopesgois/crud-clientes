@@ -4,7 +4,7 @@ services:
     image: postgres:latest
     container_name: crud-db
     ports:
-      - 5433:5432
+      - 5432:5432
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
@@ -37,6 +37,25 @@ services:
      - ./node_modules:/var/www/code/app/node_modules
     links:
       - postgresdb
+  metabase:
+      volumes:
+        - ./metabase-data:/metabase-data
+      environment:
+        - MB_DB_FILE=/metabase-data/metabase.db
+        - MB_DB_TYPE=postgres
+        - MB_DB_DBNAME=crud_db
+        - MB_DB_PORT=5432
+        - MB_DB_USER=root
+        - MB_DB_PASS=root
+        - MB_DB_HOST=postgresdb
+      ports:
+        - 3000:3000
+      image: metabase/metabase
+      restart: always
+      depends_on: 
+        - postgresdb
+      networks:
+        - nestjs-network
 networks:
   nestjs-network:
     driver: bridge
